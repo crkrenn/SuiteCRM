@@ -37,8 +37,68 @@ sudo apt install msmtp msmtp-mta
 ### edit  ~/.msmtprc
 ### test echo -e "Subject: Test Email\n\nThis is a test email from msmtp." | msmtp <email_address>
 
+## enable unattended updates and email notifications: (unattended_updates.md)
+sudo apt update
+sudo apt install unattended-upgrades
+sudo dpkg-reconfigure --priority=low unattended-upgrades
+sudo nano /etc/apt/apt.conf.d/50unattended-upgrades
+sudo nano /etc/apt/apt.conf.d/10periodic
+
+### follow instructions for msmtp mail
+### test with `sudo unattended-upgrade -d`
+
+
+## assign fixed ip
+# ip4 is much easier, though it costs $40/year
+
 
 ## install apache, php, mysql
+
+https://www.digitalocean.com/community/tutorials/how-to-install-lamp-stack-on-ubuntu
+
+sudo apt update
+sudo apt install apache2
+sudo apt install openssl
+sudo a2enmod ssl
+sudo a2ensite default-ssl
+
+### open http and https ports
+### test apache installation
+### install ssl certificates:
+sudo apt update
+sudo apt install certbot python3-certbot-apache
+sudo certbot --apache
+sudo systemctl status certbot.timer
+
+### modify apache to automatically convert http connection to https connection
+sudo a2enmod rewrite
+sudo systemctl restart apache2
+
+sudo emacs -nw /var/www/html/.htaccess
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+sudo a2ensite default-ssl
+sudo systemctl restart apache2
+
+### install mysql:
+sudo apt install mysql-server
+sudo mysql
+
+### download suitecrm code
+https://docs.suitecrm.com/8.x/admin/releases/
+wget https://github.com/salesagility/SuiteCRM-Core/releases/download/v8.6.1/SuiteCRM-8.6.1.zip
+
+
+
+
+
 sudo apt -y install software-properties-common
 sudo add-apt-repository ppa:ondrej/php
+### google latest version of php; sudo apt -y install phpX.X
+### follow install_php_composer
 
+    
